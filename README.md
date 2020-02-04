@@ -51,3 +51,9 @@ We work for Archaic Enterprise Solutions. We build solutions and sell them to cl
 
 * Postman - tool for simplify API dev
 * Swagger
+
+## Links Provided
+
+### Swagger with WebAPI 2.0 login token
+
+https://stackoverflow.com/questions/51117655/how-to-use-swagger-in-asp-net-webapi-2-0-with-token-based-authentication

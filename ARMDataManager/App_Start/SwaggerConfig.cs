@@ -4,7 +4,10 @@ using ARMDataManager;
 using ARMDataManager.App_Start;
 using Swashbuckle.Application;
 
-[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
+// change this to include based on build env config
+#if true
+    [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")] 
+#endif
 
 namespace ARMDataManager
 {
@@ -19,6 +22,9 @@ namespace ARMDataManager
                     {
                         // Enable token auth using custom code
                         c.DocumentFilter<AuthTokenOperation>();
+
+                        // Add a new auth param to each operation
+                        c.OperationFilter<AuthorizationOperationFilter>();
 
                         // By default, the service root url is inferred from the request used to access the docs.
                         // However, there may be situations (e.g. proxy and load-balanced environments) where this does not
