@@ -47,19 +47,10 @@ namespace ARMDesktopUI
         }
 
         // Pass in a Type and a name, and return an instance from the container
-        protected override object GetInstance(Type service, string key)
-        {
-            return _container.GetInstance(service, key);
-        }
+        protected override object GetInstance(Type service, string key) => _container.GetInstance(service, key);
 
-        protected override IEnumerable<object> GetAllInstances(Type service)
-        {
-            return _container.GetAllInstances(service);
-        }
+        protected override IEnumerable<object> GetAllInstances(Type service) => _container.GetAllInstances(service);
 
-        protected override void BuildUp(object instance)
-        {
-            _container.BuildUp(instance);
-        }
+        protected override void BuildUp(object instance) => _container.BuildUp(instance);
     }
 }
