@@ -37,7 +37,8 @@ namespace ARMDesktopUI
             // Warning - avoid Singletons if possible. In general, PerRequest
             _container
                 .Singleton<IWindowManager, WindowManager>()
-                .Singleton<IEventAggregator, EventAggregator>();
+                .Singleton<IEventAggregator, EventAggregator>()
+                .Singleton<IApiHelper, ApiHelper>();
 
             // Use Reflection to wire up our views and viewmodels
             GetType().Assembly
