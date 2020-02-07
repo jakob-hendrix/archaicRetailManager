@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using ARMDesktopUI.Helpers;
@@ -20,6 +21,7 @@ namespace ARMDesktopUI
         {
             Initialize();
 
+            //From: https://stackoverflow.com/questions/30631522/caliburn-micro-support-for-passwordbox
             ConventionManager.AddElementConvention<PasswordBox>(
                 PasswordBoxHelper.BoundPasswordProperty,
                 "Password",
