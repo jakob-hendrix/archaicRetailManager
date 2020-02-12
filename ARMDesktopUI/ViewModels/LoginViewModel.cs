@@ -85,6 +85,9 @@ namespace ARMDesktopUI.ViewModels
             {
                 ErrorMessage = string.Empty;
                 var result = await _apiHelper.Authenticate(UserName, Password);
+
+                // Update our user data
+                await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
             }
             catch (Exception ex)
             {

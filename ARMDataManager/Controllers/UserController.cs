@@ -11,6 +11,7 @@ namespace ARMDataManager.Controllers
     public class UserController : ApiController
     {
         // Return the user id of the currently authorized person
+        [HttpGet]
         public UserModel GetById()
         {
             // get the user id from the context
