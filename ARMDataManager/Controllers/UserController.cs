@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using ARMDataManager.Library.DataAccess;
 using ARMDataManager.Library.Models;
@@ -10,12 +11,15 @@ namespace ARMDataManager.Controllers
     public class UserController : ApiController
     {
         // Return the user id of the currently authorized person
-        public List<UserModel> GetById()
+        public UserModel GetById()
         {
+            // get the user id from the context
             string userId = RequestContext.Principal.Identity.GetUserId();
             var data = new UserData();
 
-            return data.GetUserById(userId);
+            return data
+                .GetUserById(userId)
+                .First();
         }
     }
 }
