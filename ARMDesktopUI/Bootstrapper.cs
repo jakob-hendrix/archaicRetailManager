@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using ARMDesktopUI.Helpers;
+using ARMDesktopUI.Library.Api;
 using ARMDesktopUI.ViewModels;
 using Caliburn.Micro;
 

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using ARMDesktopUI.Models;
+using ARMDesktopUI.Library.Models;
 
-namespace ARMDesktopUI.Helpers
+namespace ARMDesktopUI.Library.Api
 {
     public interface IApiHelper
     {

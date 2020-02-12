@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics.Eventing.Reader;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using ARMDesktopUI.Models;
+using ARMDesktopUI.Library.Models;
 
-namespace ARMDesktopUI.Helpers
+namespace ARMDesktopUI.Library.Api
 {
     public class ApiHelper : IApiHelper
     {

@@ -1,4 +1,4 @@
-﻿namespace ARMDesktopUI.Models
+﻿namespace ARMDesktopUI.Library.Models
 {
     public class AuthenticatedUser
     {

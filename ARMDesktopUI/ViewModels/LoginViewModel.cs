@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ARMDesktopUI.Helpers;
+using ARMDesktopUI.Library.Api;
 using Caliburn.Micro;
 
 namespace ARMDesktopUI.ViewModels
