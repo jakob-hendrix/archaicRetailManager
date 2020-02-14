@@ -6,31 +6,26 @@ namespace ARMDesktopUI.ViewModels
 {
     public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
     {
-        private LoginViewModel _loginVM;
         private SalesViewModel _salesVM;
         private SimpleContainer _container;
         private IEventAggregator _events;
 
-        public ShellViewModel(IEventAggregator events, LoginViewModel loginVM, SalesViewModel salesVM, SimpleContainer container)
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, SimpleContainer container)
         {
-            _loginVM = loginVM;
-            _salesVM = salesVM;
-
             _container = container;
+            _salesVM = salesVM;
 
             _events = events;
             _events.Subscribe(this);
 
-            ActivateItem(_loginVM);
+            // each request gets a new instance. The login view will go away upon activation of a new item
+            ActivateItem(_container.GetInstance<LoginViewModel>());
         }
 
         public void Handle(LogOnEvent message)
         {
-            // only 1 item can be open at a time
+            // we want to hold this in memory so we don't lose the cart state when changing context
             ActivateItem(_salesVM);
-
-            // Override the prior login VM
-            _loginVM = _container.GetInstance<LoginViewModel>();
         }
     }
 }
