@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ARMDesktopUI.EventModels;
 using ARMDesktopUI.Library.Api;
 using Caliburn.Micro;
 
@@ -8,13 +9,15 @@ namespace ARMDesktopUI.ViewModels
     public class LoginViewModel : Screen
     {
         private IApiHelper _apiHelper;
+        private IEventAggregator _events;
         private string _userName = "";
         private string _password;
         private string _errorMessage;
 
-        public LoginViewModel(IApiHelper apiHelper)
+        public LoginViewModel(IApiHelper apiHelper, IEventAggregator events)
         {
             _apiHelper = apiHelper;
+            _events = events;
         }
 
         public string UserName
@@ -88,6 +91,9 @@ namespace ARMDesktopUI.ViewModels
 
                 // Update our user data
                 await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
+
+                // Let the program know someone has logged on
+                _events.BeginPublishOnUIThread(new LogOnEvent());
             }
             catch (Exception ex)
             {
