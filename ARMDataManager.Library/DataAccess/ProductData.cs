@@ -4,20 +4,18 @@ using ARMDataManager.Library.Models;
 
 namespace ARMDataManager.Library.DataAccess
 {
-    /// <summary>
-    ///  Get information about the User table
-    /// </summary>
-    public class UserData
+    public class ProductData
     {
-        public List<UserModel> GetUserById(string id)
+        public List<ProductModel> GetProducts()
         {
             SqlDataAccess sql = new SqlDataAccess();
 
-            var parameters = new { Id = id };
+            var parameters = new { };
 
             var output =
-                sql.LoadData<UserModel, dynamic>(
-                    "dbo.spUserLookup",
+                sql.LoadData<ProductModel, dynamic>
+                (
+                    "dbo.spProduct_GetAll",
                     parameters,
                     "TRMData"
                 );

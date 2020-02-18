@@ -32,7 +32,8 @@ namespace ARMDesktopUI
         protected override void Configure()
         {
             // when asking for a SimpleContainer, this returns the instance of itself
-            _container.Instance(_container);
+            _container.Instance(_container)
+                .PerRequest<IProductEndpoint, ProductEndpoint>();
 
             // Caliburn & Micro config.
             // Warning - avoid Singletons if possible. In general, PerRequest

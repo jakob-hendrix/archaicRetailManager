@@ -1,13 +1,37 @@
 ﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using ARMDesktopUI.Library.Api;
+using ARMDesktopUI.Library.Models;
 using Caliburn.Micro;
 
 namespace ARMDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private BindingList<string> _products;
+        private IProductEndpoint _productEndpoint;
+        private BindingList<ProductModel> _products;
+        private BindingList<ProductModel> _cart;
+        private string _itemQuantity;
 
-        public BindingList<string> Products
+        public SalesViewModel(IProductEndpoint productEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+        }
+
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        private async Task LoadProducts()
+        {
+            var productList = await _productEndpoint.GetAllProducts();
+            Products = new BindingList<ProductModel>(productList);
+        }
+
+        public BindingList<ProductModel> Products
         {
             get => _products;
             set
@@ -17,9 +41,7 @@ namespace ARMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _cart;
-
-        public BindingList<string> Cart
+        public BindingList<ProductModel> Cart
         {
             get => _cart;
             set
@@ -28,8 +50,6 @@ namespace ARMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => Cart);
             }
         }
-
-        private string _itemQuantity;
 
         public string ItemQuantity
         {

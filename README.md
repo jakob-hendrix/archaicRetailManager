@@ -3,7 +3,7 @@
 Walk along with Tim Corey's TimCo Retail Manager Course Introduction course on Youtube.
 
 Playlist: https://www.youtube.com/playlist?list=PLLWMQd6PeGY0bEMxObA6dtYXuJOGfxSPx
-Current Video: https://www.youtube.com/watch?v=k6mbESq--eE&list=PLLWMQd6PeGY0bEMxObA6dtYXuJOGfxSPx&index=17
+Current Video: https://www.youtube.com/watch?v=k6mbESq--eE&list=PLLWMQd6PeGY0bEMxObA6dtYXuJOGfxSPx&index=18
 
 
 ## Note
@@ -14,7 +14,7 @@ Current Video: https://www.youtube.com/watch?v=k6mbESq--eE&list=PLLWMQd6PeGY0bEM
 
 We work for Archaic Enterprise Solutions. We build solutions and sell them to clients. Our current project is to build a retail manager.
 
-### Intial Project
+### Initial Project
 
 * Requirements
   * build a desktop app that

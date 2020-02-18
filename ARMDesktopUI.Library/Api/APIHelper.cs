@@ -19,6 +19,11 @@ namespace ARMDesktopUI.Library.Api
             InitializeClient();
         }
 
+        public HttpClient ApiClient
+        {
+            get => _apiClient;
+        }
+
         private void InitializeClient()
         {
             string api = ConfigurationManager.AppSettings["api"];
