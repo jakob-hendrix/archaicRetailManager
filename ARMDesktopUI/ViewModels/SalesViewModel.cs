@@ -11,8 +11,8 @@ namespace ARMDesktopUI.ViewModels
     {
         private IProductEndpoint _productEndpoint;
         private BindingList<ProductModel> _products;
-        private BindingList<ProductModel> _cart;
-        private string _itemQuantity;
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        private int _itemQuantity;
 
         public SalesViewModel(IProductEndpoint productEndpoint)
         {
@@ -41,7 +41,20 @@ namespace ARMDesktopUI.ViewModels
             }
         }
 
-        public BindingList<ProductModel> Cart
+        private ProductModel _selectedProduct;
+
+        public ProductModel SelectedProduct
+        {
+            get => _selectedProduct;
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+        public BindingList<CartItemModel> Cart
         {
             get => _cart;
             set
@@ -51,13 +64,14 @@ namespace ARMDesktopUI.ViewModels
             }
         }
 
-        public string ItemQuantity
+        public int ItemQuantity
         {
             get => _itemQuantity;
             set
             {
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
@@ -65,8 +79,13 @@ namespace ARMDesktopUI.ViewModels
         {
             get
             {
-                // TODO: replace with calc
-                return "$0.00";
+                decimal subTotal = 0;
+                foreach (var item in Cart)
+                {
+                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+                }
+
+                return subTotal.ToString("C");
             }
         }
 
@@ -96,6 +115,10 @@ namespace ARMDesktopUI.ViewModels
 
                 // Make sure something is selected
                 // Make sure there is an item quantity
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;
+                }
 
                 return output;
             }
@@ -103,6 +126,14 @@ namespace ARMDesktopUI.ViewModels
 
         public void AddToCart()
         {
+            var item = new CartItemModel
+            {
+                Product = SelectedProduct,
+                QuantityInCart = ItemQuantity
+            };
+
+            Cart.Add(item);
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanRemoveFromCart
@@ -119,6 +150,7 @@ namespace ARMDesktopUI.ViewModels
 
         public void RemoveFromCart()
         {
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanCheckOut
