@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ARMDesktopUI.Library.Api;
@@ -12,7 +13,7 @@ namespace ARMDesktopUI.ViewModels
         private IProductEndpoint _productEndpoint;
         private BindingList<ProductModel> _products;
         private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
-        private int _itemQuantity;
+        private int _itemQuantity = 1;
 
         public SalesViewModel(IProductEndpoint productEndpoint)
         {
@@ -126,13 +127,29 @@ namespace ARMDesktopUI.ViewModels
 
         public void AddToCart()
         {
-            var item = new CartItemModel
-            {
-                Product = SelectedProduct,
-                QuantityInCart = ItemQuantity
-            };
+            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
-            Cart.Add(item);
+            if (existingItem != null)
+            {
+                existingItem.QuantityInCart += ItemQuantity;
+
+                // TODO: fix this HACK to properly force the cart to refresh
+                Cart.Remove(existingItem);
+                Cart.Add(existingItem);
+            }
+            else
+            {
+                var item = new CartItemModel
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            }
+
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+
             NotifyOfPropertyChange(() => SubTotal);
         }
 
