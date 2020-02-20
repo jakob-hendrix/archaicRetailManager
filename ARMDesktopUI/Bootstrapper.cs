@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ARMDesktopUI.Helpers;
 using ARMDesktopUI.Library.Api;
+using ARMDesktopUI.Library.Helpers;
 using ARMDesktopUI.Library.Models;
 using ARMDesktopUI.ViewModels;
 using Caliburn.Micro;
@@ -41,6 +42,7 @@ namespace ARMDesktopUI
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IApiHelper, ApiHelper>();
 
             // Use Reflection to wire up our views and viewmodels

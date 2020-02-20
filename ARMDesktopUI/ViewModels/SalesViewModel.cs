@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ARMDesktopUI.Library.Api;
+using ARMDesktopUI.Library.Helpers;
 using ARMDesktopUI.Library.Models;
 using Caliburn.Micro;
 
@@ -11,13 +11,15 @@ namespace ARMDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private IProductEndpoint _productEndpoint;
+        private IConfigHelper _configHelper;
         private BindingList<ProductModel> _products;
         private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
         private int _itemQuantity = 1;
 
-        public SalesViewModel(IProductEndpoint productEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
             _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -76,35 +78,44 @@ namespace ARMDesktopUI.ViewModels
             }
         }
 
-        public string SubTotal
-        {
-            get
-            {
-                decimal subTotal = 0;
-                foreach (var item in Cart)
-                {
-                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-                }
+        public string SubTotal => CalculateSubTotal().ToString("C");
 
-                return subTotal.ToString("C");
-            }
+        private decimal CalculateSubTotal()
+        {
+            decimal subTotal = 0;
+            subTotal = Cart.Sum(i => i.Product.RetailPrice * i.QuantityInCart);
+
+            //foreach (var item in Cart)
+            //{
+            //    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+            //}
+            return subTotal;
         }
 
-        public string Tax
+        public string Tax => CalculateTax().ToString("C");
+
+        private decimal CalculateTax()
         {
-            get
+            decimal taxAmount = 0;
+            decimal taxRate = (decimal)_configHelper.GetTaxRate() / 100;
+
+            foreach (var item in Cart)
             {
-                // TODO: replace with calc
-                return "$0.00";
+                if (item.Product.IsTaxable)
+                {
+                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
+                }
             }
+
+            return taxAmount;
         }
 
         public string Total
         {
             get
             {
-                // TODO: replace with calc
-                return "$0.00";
+                decimal total = CalculateSubTotal() + CalculateTax();
+                return total.ToString("C");
             }
         }
 
@@ -151,6 +162,8 @@ namespace ARMDesktopUI.ViewModels
             ItemQuantity = 1;
 
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanRemoveFromCart
@@ -168,6 +181,8 @@ namespace ARMDesktopUI.ViewModels
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanCheckOut

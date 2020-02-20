@@ -26,5 +26,10 @@
         /// The current quantity of the product in inventory
         /// </summary>
         public int QuantityInStock { get; set; }
+
+        /// <summary>
+        /// A flag indicating if this product is tax-exempt
+        /// </summary>
+        public bool IsTaxable { get; set; }
     }
 }

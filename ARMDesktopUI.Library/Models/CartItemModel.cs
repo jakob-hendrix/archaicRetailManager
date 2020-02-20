@@ -13,6 +13,7 @@ namespace ARMDesktopUI.Library.Models
 
         public string DisplayText
         {
+            // TODO: display differently based on amount
             get => $"{Product.ProductName} ({QuantityInCart})";
         }
     }
