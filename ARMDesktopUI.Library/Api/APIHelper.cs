@@ -10,7 +10,7 @@ namespace ARMDesktopUI.Library.Api
 {
     public class ApiHelper : IApiHelper
     {
-        private ILoggedInUserModel _loggedInUser;
+        private readonly ILoggedInUserModel _loggedInUser;
         private HttpClient _apiClient;
 
         public ApiHelper(ILoggedInUserModel loggedInUser)

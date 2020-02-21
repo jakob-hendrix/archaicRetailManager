@@ -8,10 +8,10 @@ namespace ARMDesktopUI.ViewModels
 {
     public class LoginViewModel : Screen
     {
-        private IApiHelper _apiHelper;
-        private IEventAggregator _events;
-        private string _userName = "";
-        private string _password;
+        private readonly IApiHelper _apiHelper;
+        private readonly IEventAggregator _events;
+        private string _userName = "jakob.hendrix@la.gov";  // TODO: remove this test code
+        private string _password = "Pwd12345.";  // TODO: remove this test code
         private string _errorMessage;
 
         public LoginViewModel(IApiHelper apiHelper, IEventAggregator events)

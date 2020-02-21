@@ -1,25 +1,25 @@
-﻿using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using ARMDesktopUI.Library.Api;
+﻿using ARMDesktopUI.Library.Api;
 using ARMDesktopUI.Library.Helpers;
 using ARMDesktopUI.Library.Models;
 using Caliburn.Micro;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ARMDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private IProductEndpoint _productEndpoint;
-        private IConfigHelper _configHelper;
-        private BindingList<ProductModel> _products;
-        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        private readonly IProductEndpoint _productEndpoint;
+        private readonly IConfigHelper _configHelper;
+        private readonly ISaleEndpoint _saleEndpoint;
         private int _itemQuantity = 1;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
+            _saleEndpoint = saleEndpoint;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -33,6 +33,8 @@ namespace ARMDesktopUI.ViewModels
             var productList = await _productEndpoint.GetAllProducts();
             Products = new BindingList<ProductModel>(productList);
         }
+
+        private BindingList<ProductModel> _products;
 
         public BindingList<ProductModel> Products
         {
@@ -56,6 +58,8 @@ namespace ARMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
+
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
 
         public BindingList<CartItemModel> Cart
         {
@@ -110,22 +114,7 @@ namespace ARMDesktopUI.ViewModels
             }
         }
 
-        public bool CanAddToCart
-        {
-            get
-            {
-                bool output = false;
-
-                // Make sure something is selected
-                // Make sure there is an item quantity
-                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
-                {
-                    output = true;
-                }
-
-                return output;
-            }
-        }
+        public bool CanAddToCart => ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity;
 
         public void AddToCart()
         {
@@ -155,6 +144,7 @@ namespace ARMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanRemoveFromCart
@@ -174,22 +164,25 @@ namespace ARMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
-        public bool CanCheckOut
+        public bool CanCheckOut => Cart.Count > 0;
+
+        public async Task CheckOut()
         {
-            get
+            // Convert our cart into a sale for the API
+            var sale = new SaleModel();
+            foreach (var item in Cart)
             {
-                bool output = false;
-
-                // Make sure something is in the cart
-
-                return output;
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart
+                });
             }
-        }
 
-        public void CheckOut()
-        {
+            await _saleEndpoint.PostSale(sale);
         }
     }
 }

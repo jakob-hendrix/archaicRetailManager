@@ -34,6 +34,7 @@ namespace ARMDesktopUI
         {
             // when asking for a SimpleContainer, this returns the instance of itself
             _container.Instance(_container)
+                .PerRequest<ISaleEndpoint, SaleEndpoint>()
                 .PerRequest<IProductEndpoint, ProductEndpoint>();
 
             // Caliburn & Micro config.
