@@ -84,11 +84,6 @@ namespace ARMDesktopUI.ViewModels
         {
             decimal subTotal = 0;
             subTotal = Cart.Sum(i => i.Product.RetailPrice * i.QuantityInCart);
-
-            //foreach (var item in Cart)
-            //{
-            //    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-            //}
             return subTotal;
         }
 
@@ -99,13 +94,9 @@ namespace ARMDesktopUI.ViewModels
             decimal taxAmount = 0;
             decimal taxRate = (decimal)_configHelper.GetTaxRate() / 100;
 
-            foreach (var item in Cart)
-            {
-                if (item.Product.IsTaxable)
-                {
-                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
-                }
-            }
+            taxAmount =
+                Cart.Where(i => i.Product.IsTaxable)
+                    .Sum(i => i.Product.RetailPrice * i.QuantityInCart * taxRate);
 
             return taxAmount;
         }
