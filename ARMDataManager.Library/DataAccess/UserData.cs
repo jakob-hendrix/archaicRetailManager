@@ -19,7 +19,7 @@ namespace ARMDataManager.Library.DataAccess
                 sql.LoadData<UserModel, dynamic>(
                     "dbo.spUserLookup",
                     parameters,
-                    "TRMData"
+                    "ARMData"
                 );
 
             return output;

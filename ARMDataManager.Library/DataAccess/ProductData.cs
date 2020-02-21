@@ -17,7 +17,7 @@ namespace ARMDataManager.Library.DataAccess
                 (
                     "dbo.spProduct_GetAll",
                     parameters,
-                    "TRMData"
+                    "ARMData"
                 );
 
             return output;
