@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,7 +8,9 @@ using ARMDesktopUI.Helpers;
 using ARMDesktopUI.Library.Api;
 using ARMDesktopUI.Library.Helpers;
 using ARMDesktopUI.Library.Models;
+using ARMDesktopUI.Models;
 using ARMDesktopUI.ViewModels;
+using AutoMapper;
 using Caliburn.Micro;
 
 namespace ARMDesktopUI
@@ -32,6 +35,17 @@ namespace ARMDesktopUI
 
         protected override void Configure()
         {
+            // Setup automapper
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                cfg.CreateMap<CartItemModel, CartItemDisplayModel>();
+            });
+
+            // Create a mapper and insert into DI
+            var mapper = config.CreateMapper();
+            _container.Instance(mapper);  // singleton
+
             // when asking for a SimpleContainer, this returns the instance of itself
             _container.Instance(_container)
                 .PerRequest<ISaleEndpoint, SaleEndpoint>()

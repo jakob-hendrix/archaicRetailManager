@@ -57,6 +57,8 @@ We work for Archaic Enterprise Solutions. We build solutions and sell them to cl
 
 * Postman - tool for simplify API dev
 * Swagger
+* Caliburn/Micro - provides a lot of good WPF functioanlyt wrappers
+* Automapper - transform models between app layer
 
 ## Links Provided
 
