@@ -24,5 +24,10 @@ namespace ARMDesktopUI.Views
         {
             InitializeComponent();
         }
+
+        private void RemoveFromCart_Click()
+        {
+
+        }
     }
 }
