@@ -1,6 +1,7 @@
-﻿using System;
-using System.Web.Http;
+﻿using System.Web.Http;
+using ARMDataManager.Library.DataAccess;
 using ARMDataManager.Library.Models;
+using Microsoft.AspNet.Identity;
 
 namespace ARMDataManager.Controllers
 {
@@ -10,14 +11,8 @@ namespace ARMDataManager.Controllers
         [HttpPost]
         public void Post(SaleModel sale)
         {
-            Console.WriteLine();
+            var data = new SaleData();
+            data.SaveSale(sale, RequestContext.Principal.Identity.GetUserId());
         }
-
-        //[HttpGet]
-        //public List<ProductModel> Get()
-        //{
-        //    var data = new ProductData();
-        //    return data.GetProducts();
-        //}
     }
 }
