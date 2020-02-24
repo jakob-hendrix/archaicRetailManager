@@ -33,7 +33,7 @@ namespace ARMDesktopUI
                 "PasswordChanged");
         }
 
-        protected override void Configure()
+        private IMapper ConfigureAutomapper()
         {
             // Setup automapper
             var config = new MapperConfiguration(cfg =>
@@ -43,8 +43,12 @@ namespace ARMDesktopUI
             });
 
             // Create a mapper and insert into DI
-            var mapper = config.CreateMapper();
-            _container.Instance(mapper);  // singleton
+            return config.CreateMapper();
+        }
+
+        protected override void Configure()
+        {
+            _container.Instance(ConfigureAutomapper());  // singleton
 
             // when asking for a SimpleContainer, this returns the instance of itself
             _container.Instance(_container)
