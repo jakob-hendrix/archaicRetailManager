@@ -11,5 +11,7 @@ namespace ARMDesktopUI.Library.Api
         Task<AuthenticatedUser> Authenticate(string userName, string password);
 
         Task GetLoggedInUserInfo(string token);
+
+        void LogOffUser();
     }
 }

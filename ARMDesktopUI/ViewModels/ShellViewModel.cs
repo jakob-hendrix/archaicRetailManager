@@ -1,5 +1,6 @@
 ﻿using System;
 using ARMDesktopUI.EventModels;
+using ARMDesktopUI.Library.Api;
 using ARMDesktopUI.Library.Models;
 using Caliburn.Micro;
 
@@ -7,14 +8,17 @@ namespace ARMDesktopUI.ViewModels
 {
     public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
     {
-        private SalesViewModel _salesVM;
+        private readonly SalesViewModel _salesViewModel;
         private readonly ILoggedInUserModel _user;
+        private readonly IApiHelper _apiHelper;
         private IEventAggregator _events;
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, ILoggedInUserModel user)
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesViewModel,
+            ILoggedInUserModel user, IApiHelper apiHelper)
         {
-            _salesVM = salesVM;
+            _salesViewModel = salesViewModel;
             _user = user;
+            _apiHelper = apiHelper;
             _events = events;
 
             _events.Subscribe(this);
@@ -27,9 +31,9 @@ namespace ARMDesktopUI.ViewModels
 
         public void LogOut()
         {
-            _user.InitializeUser();
+            _user.InitializeUserModel();
+            _apiHelper.LogOffUser();
             ActivateItem(IoC.Get<LoginViewModel>());
-
             NotifyOfPropertyChange(() => IsUserLoggedOn);
         }
 
@@ -38,7 +42,7 @@ namespace ARMDesktopUI.ViewModels
         public void Handle(LogOnEvent message)
         {
             // we want to hold this in memory so we don't lose the cart state when changing context
-            ActivateItem(_salesVM);
+            ActivateItem(_salesViewModel);
             NotifyOfPropertyChange(() => IsUserLoggedOn);
         }
     }

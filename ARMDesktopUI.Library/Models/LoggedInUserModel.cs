@@ -11,7 +11,7 @@ namespace ARMDesktopUI.Library.Models
         public string EmailAddress { get; set; }
         public DateTime CreatedDate { get; set; }
 
-        public void InitializeUser()
+        public void InitializeUserModel()
         {
             Token = "";
             Id = "";
