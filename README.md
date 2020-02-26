@@ -3,7 +3,7 @@
 Walk along with Tim Corey's TimCo Retail Manager Course Introduction course on Youtube.
 
 Playlist: https://www.youtube.com/playlist?list=PLLWMQd6PeGY0bEMxObA6dtYXuJOGfxSPx
-Current Video: https://www.youtube.com/watch?v=k6mbESq--eE&list=PLLWMQd6PeGY0bEMxObA6dtYXuJOGfxSPx&index=22
+Current Video: https://www.youtube.com/watch?v=k6mbESq--eE&list=PLLWMQd6PeGY0bEMxObA6dtYXuJOGfxSPx&index=23
 
 
 ## Note

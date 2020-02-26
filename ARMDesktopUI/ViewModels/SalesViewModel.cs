@@ -18,6 +18,10 @@ namespace ARMDesktopUI.ViewModels
         private readonly ISaleEndpoint _saleEndpoint;
         private readonly IMapper _mapper;
         private int _itemQuantity = 1;
+        private BindingList<ProductDisplayModel> _products;
+        private ProductDisplayModel _selectedProduct;
+        private CartItemDisplayModel _selectedCartItem;
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 
         public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper,
             ISaleEndpoint saleEndpoint, IMapper mapper)
@@ -34,15 +38,25 @@ namespace ARMDesktopUI.ViewModels
             await LoadProducts();
         }
 
+        private async Task ResetViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+            // TODO: add clearing of the cart item if it doesn't do it manually
+
+            await LoadProducts();
+
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
+
         private async Task LoadProducts()
         {
             var productList = await _productEndpoint.GetAllProducts();
             var products = _mapper.Map<List<ProductDisplayModel>>(productList);
-
             Products = new BindingList<ProductDisplayModel>(products);
         }
-
-        private BindingList<ProductDisplayModel> _products;
 
         public BindingList<ProductDisplayModel> Products
         {
@@ -53,8 +67,6 @@ namespace ARMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => Products);
             }
         }
-
-        private ProductDisplayModel _selectedProduct;
 
         public ProductDisplayModel SelectedProduct
         {
@@ -67,8 +79,6 @@ namespace ARMDesktopUI.ViewModels
             }
         }
 
-        private CartItemDisplayModel _selectedCartItem;
-
         public CartItemDisplayModel SelectedCartItem
         {
             get => _selectedCartItem;
@@ -79,8 +89,6 @@ namespace ARMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => CanRemoveFromCart);
             }
         }
-
-        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 
         public BindingList<CartItemDisplayModel> Cart
         {
@@ -202,6 +210,9 @@ namespace ARMDesktopUI.ViewModels
             }
 
             await _saleEndpoint.PostSale(sale);
+
+            // if successful, we should reset the page back to it's starting conditions
+            await ResetViewModel();
         }
     }
 }
