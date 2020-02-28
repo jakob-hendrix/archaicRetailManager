@@ -13,6 +13,8 @@ namespace ARMDataManager.Library.Internal.DataAccess
         /*Uses Dapper -  a micro-ORM.
          * Is fast, uses stored procedures, and doesn't generate code, unlike Entity Framework
          */
+        private IDbConnection _connection;
+        private IDbTransaction _transaction;
 
         public void SaveData<T>(string storedProcedure, T parameters, string connectionStringName)
         {
@@ -41,10 +43,24 @@ namespace ARMDataManager.Library.Internal.DataAccess
             }
         }
 
-        // get connection string
-        public string GetConnectionString(string name)
+        private string GetConnectionString(string name) => ConfigurationManager.ConnectionStrings[name].ConnectionString;
+
+        public void StartTransaction(string connectionStringName)
         {
-            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            var connectionString = GetConnectionString(connectionStringName);
+            _connection = new SqlConnection(connectionString);
+            _transaction = _connection.BeginTransaction();
         }
+
+        public void StopTransaction()
+        {
+            _transaction?.Commit();
+        }
+
+        // open connection/start transaction method
+        // load using the transaction
+        // save using the transaction
+        // close connection
+        // implement IDisposable (makes this wrappable in a using statement)
     }
 }
