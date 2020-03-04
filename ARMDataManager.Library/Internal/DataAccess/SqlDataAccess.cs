@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -8,7 +9,8 @@ using Dapper;
 namespace ARMDataManager.Library.Internal.DataAccess
 {
     // internal, so nothing outside this project can use this class
-    internal class SqlDataAccess
+    [System.Runtime.InteropServices.Guid("91841340-DA0F-463D-A268-81CD8FD94649")]
+    internal class SqlDataAccess : IDisposable
     {
         /*Uses Dapper -  a micro-ORM.
          * Is fast, uses stored procedures, and doesn't generate code, unlike Entity Framework
@@ -49,18 +51,42 @@ namespace ARMDataManager.Library.Internal.DataAccess
         {
             var connectionString = GetConnectionString(connectionStringName);
             _connection = new SqlConnection(connectionString);
+            _connection.Open();
+
             _transaction = _connection.BeginTransaction();
         }
 
-        public void StopTransaction()
+        public List<T> LoadDataInTransaction<T, U>(string storedProcedure, U parameters)
         {
-            _transaction?.Commit();
+            List<T> rows =
+                _connection
+                    .Query<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction)
+                    .ToList();
+
+            return rows;
         }
 
-        // open connection/start transaction method
-        // load using the transaction
-        // save using the transaction
-        // close connection
-        // implement IDisposable (makes this wrappable in a using statement)
+        public void SaveDataInTransaction<T>(string storedProcedure, T parameters)
+        {
+            _connection.Execute(storedProcedure, parameters,
+                commandType: CommandType.StoredProcedure, transaction: _transaction);
+        }
+
+        public void CommitTransaction()
+        {
+            _transaction?.Commit();
+            _connection?.Close();
+        }
+
+        public void RollbackTransaction()
+        {
+            _transaction?.Rollback();
+            _connection?.Close();
+        }
+
+        public void Dispose()
+        {
+            CommitTransaction();
+        }
     }
 }

@@ -54,41 +54,35 @@ namespace ARMDataManager.Library.DataAccess
             sale.Total = sale.SubTotal + sale.TaxTotal;
 
             // Save the SaleModel
-            SqlDataAccess sql = new SqlDataAccess();
-            sql.SaveData<SaleDbModel>("dbo.spSale_Insert", sale, "ARMData");
-
-            // Get the id for the new sale
-            sale.Id = sql.LoadData<int, dynamic>
-            (
-                "spSale_Lookup",
-                new { sale.CashierId, sale.SaleDate },
-                "ARMData"
-            ).FirstOrDefault();
-
-            // Finish filling in the saleInfo detail and save the saleInfo detail models
-            foreach (var item in details)
+            using (var sql = new SqlDataAccess())
             {
-                item.SaleId = sale.Id;
-                sql.SaveData("dbo.spSaleDetail_Insert", item, "ARMData");
+                try
+                {
+                    sql.StartTransaction("ARMData");
+
+                    sql.SaveDataInTransaction<SaleDbModel>("dbo.spSale_Insert", sale);
+
+                    // Get the id for the new sale
+                    sale.Id = sql
+                        .LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { sale.CashierId, sale.SaleDate })
+                        .FirstOrDefault();
+
+                    // Finish filling in the saleInfo detail and save the saleInfo detail models
+                    foreach (var item in details)
+                    {
+                        item.SaleId = sale.Id;
+                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
+                    }
+
+                    sql.CommitTransaction();
+                }
+                catch
+                {
+                    // TODO: notify the user
+                    sql.RollbackTransaction();
+                    throw;
+                }
             }
         }
-
-        //public List<ProductModel> GetProducts()
-
-        //{
-        //    SqlDataAccess sql = new SqlDataAccess();
-
-        //    var parameters = new { };
-
-        //    var output =
-        //        sql.LoadData<ProductModel, dynamic>
-        //        (
-        //            "dbo.spProduct_GetAll",
-        //            parameters,
-        //            "ARMData"
-        //        );
-
-        //    return output;
-        //}
     }
 }
