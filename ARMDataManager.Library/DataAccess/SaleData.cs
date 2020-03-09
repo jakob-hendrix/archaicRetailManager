@@ -1,6 +1,9 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Runtime.Remoting.Messaging;
 using ARMDataManager.Library.Helpers;
 using ARMDataManager.Library.Internal.DataAccess;
 using ARMDataManager.Library.Models;
@@ -64,7 +67,7 @@ namespace ARMDataManager.Library.DataAccess
 
                     // Get the id for the new sale
                     sale.Id = sql
-                        .LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { sale.CashierId, sale.SaleDate })
+                        .LoadDataInTransaction<int, dynamic>("dbo.spSale_Lookup", new { sale.CashierId, sale.SaleDate })
                         .FirstOrDefault();
 
                     // Finish filling in the saleInfo detail and save the saleInfo detail models
@@ -83,6 +86,19 @@ namespace ARMDataManager.Library.DataAccess
                     throw;
                 }
             }
+        }
+
+        public List<SaleReportModel> GetSaleReport()
+        {
+            var data = new SqlDataAccess();
+            var output =
+                data.LoadData<SaleReportModel, dynamic>
+                (
+                    "dbo.spSale_SaleReport",
+                    new { },
+                    "ARMData"
+                );
+            return output;
         }
     }
 }
