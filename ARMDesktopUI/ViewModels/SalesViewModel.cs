@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ARMDesktopUI.Library.Api;
 using ARMDesktopUI.Library.Helpers;
 using ARMDesktopUI.Library.Models;
 using Caliburn.Micro;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 using ARMDesktopUI.Models;
 using AutoMapper;
 
@@ -17,6 +21,8 @@ namespace ARMDesktopUI.ViewModels
         private readonly IConfigHelper _configHelper;
         private readonly ISaleEndpoint _saleEndpoint;
         private readonly IMapper _mapper;
+        private readonly StatusInfoViewModel _status;
+        private readonly IWindowManager _windowManager;
         private int _itemQuantity = 1;
         private BindingList<ProductDisplayModel> _products;
         private ProductDisplayModel _selectedProduct;
@@ -24,18 +30,48 @@ namespace ARMDesktopUI.ViewModels
         private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 
         public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper,
-            ISaleEndpoint saleEndpoint, IMapper mapper)
+            ISaleEndpoint saleEndpoint, IMapper mapper, StatusInfoViewModel status, IWindowManager windowManager)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
             _saleEndpoint = saleEndpoint;
             _mapper = mapper;
+            _status = status;
+            _windowManager = windowManager;
         }
 
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
-            await LoadProducts();
+            try
+            {
+                await LoadProducts();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorDialog(ex);
+                TryClose();
+            }
+        }
+
+        private void ShowErrorDialog(Exception ex)
+        {
+            dynamic settings = new ExpandoObject();
+            settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            settings.ResizeMode = ResizeMode.NoResize;
+            settings.Title = "System Error";
+
+            if (ex.Message == "Unauthorized")
+            {
+                _status.UpdateMessage("Unauthorized Access",
+                    "You do not have the correct permission for this action.\n\nPlease contact your system administrator.");
+                _windowManager.ShowDialog(_status, null, settings);
+            }
+            else
+            {
+                _status.UpdateMessage("Fatal Exception", $"{ex.Message}");
+                _windowManager.ShowDialog(_status, null, settings);
+            }
         }
 
         private async Task ResetViewModel()

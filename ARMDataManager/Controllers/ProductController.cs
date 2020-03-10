@@ -5,7 +5,7 @@ using ARMDataManager.Library.Models;
 
 namespace ARMDataManager.Controllers
 {
-    [Authorize(Roles = "Cashiers")]
+    [Authorize(Roles = "Cashier")]
     public class ProductController : ApiController
     {
         [HttpGet]
