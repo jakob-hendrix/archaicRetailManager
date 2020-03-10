@@ -29,6 +29,11 @@ namespace ARMDesktopUI.ViewModels
 
         public void ExitApplication() => TryClose();
 
+        public void UserManagement()
+        {
+            ActivateItem(IoC.Get<UserDisplayViewModel>());
+        }
+
         public void LogOut()
         {
             _user.InitializeUserModel();
