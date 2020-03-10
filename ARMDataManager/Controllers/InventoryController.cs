@@ -5,15 +5,17 @@ using ARMDataManager.Library.Models;
 
 namespace ARMDataManager.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class InventoryController : ApiController
     {
+        [Authorize(Roles = "Admin,Manager")]
         public List<InventoryModel> Get()
         {
             var data = new InventoryData();
             return data.GetInventory();
         }
 
+        [Authorize(Roles = "Admin")]
         public void Post(InventoryModel item)
         {
             var data = new InventoryData();
