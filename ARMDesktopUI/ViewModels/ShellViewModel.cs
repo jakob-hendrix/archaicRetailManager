@@ -34,21 +34,23 @@ namespace ARMDesktopUI.ViewModels
             ActivateItem(IoC.Get<UserDisplayViewModel>());
         }
 
-        public void LogOut()
+        public void SignIn()
         {
             _user.InitializeUserModel();
             _apiHelper.LogOffUser();
             ActivateItem(IoC.Get<LoginViewModel>());
-            NotifyOfPropertyChange(() => IsUserLoggedOn);
+            NotifyOfPropertyChange(() => IsUserSignedOn);
         }
 
-        public bool IsUserLoggedOn => string.IsNullOrEmpty(_user.Token) == false;
+        public void SignOut() => SignIn();
+
+        public bool IsUserSignedOn => !string.IsNullOrEmpty(_user.Token);
 
         public void Handle(LogOnEvent message)
         {
             // we want to hold this in memory so we don't lose the cart state when changing context
             ActivateItem(_salesViewModel);
-            NotifyOfPropertyChange(() => IsUserLoggedOn);
+            NotifyOfPropertyChange(() => IsUserSignedOn);
         }
     }
 }
