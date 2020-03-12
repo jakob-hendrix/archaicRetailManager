@@ -1,8 +1,4 @@
-﻿using System;
-using System.Configuration;
-using Microsoft.SqlServer.Server;
-
-namespace ARMDesktopUI.Library.Helpers
+﻿namespace ARMDesktopUI.Library.Helpers
 {
     public class ConfigHelper : IConfigHelper
     {

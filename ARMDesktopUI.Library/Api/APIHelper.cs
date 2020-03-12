@@ -27,6 +27,7 @@ namespace ARMDesktopUI.Library.Api
         private void InitializeClient()
         {
             string api = ConfigurationManager.AppSettings["api"];
+            //string api = Environment.GetEnvironmentVariable("api");
 
             // Clear out our headers and accept json data
             _apiClient = new HttpClient();
