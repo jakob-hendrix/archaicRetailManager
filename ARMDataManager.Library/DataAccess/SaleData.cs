@@ -1,9 +1,6 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.Remoting.Messaging;
 using ARMDataManager.Library.Helpers;
 using ARMDataManager.Library.Internal.DataAccess;
 using ARMDataManager.Library.Models;
@@ -90,15 +87,17 @@ namespace ARMDataManager.Library.DataAccess
 
         public List<SaleReportModel> GetSaleReport()
         {
-            var data = new SqlDataAccess();
-            var output =
-                data.LoadData<SaleReportModel, dynamic>
-                (
-                    "dbo.spSale_SaleReport",
-                    new { },
-                    "ARMData"
-                );
-            return output;
+            using (var data = new SqlDataAccess())
+            {
+                var output =
+                    data.LoadData<SaleReportModel, dynamic>
+                    (
+                        "dbo.spSale_SaleReport",
+                        new { },
+                        "ARMData"
+                    );
+                return output;
+            }
         }
     }
 }
